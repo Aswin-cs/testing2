@@ -66,31 +66,32 @@ export default function ParticleCanvas({
     const baseCount = Math.min(180, Math.max(50, Math.floor(45 + aqi * 0.3)));
     const particles: Particle[] = [];
 
+    // Calibrated for crisp contrast in light mode
     const getColors = (currentAqi: number) => {
       if (currentAqi <= 50) {
         return {
-          primary: "16, 185, 129", // Emerald
-          secondary: "6, 182, 212", // Cyan
-          accent: "56, 189, 248", // Sky
+          primary: "5, 150, 105", // Emerald 600
+          secondary: "13, 148, 136", // Teal 600
+          accent: "2, 132, 199", // Sky 600
         };
       }
       if (currentAqi <= 100) {
         return {
-          primary: "234, 179, 8", // Amber
-          secondary: "245, 158, 11", // Gold
-          accent: "217, 119, 6",
+          primary: "217, 119, 6", // Amber 600
+          secondary: "202, 138, 4", // Yellow 600
+          accent: "180, 83, 9", // Amber 700
         };
       }
       if (currentAqi <= 200) {
         return {
-          primary: "249, 115, 22", // Orange
-          secondary: "239, 68, 68", // Red
-          accent: "194, 65, 12",
+          primary: "234, 88, 12", // Orange 600
+          secondary: "220, 38, 38", // Red 600
+          accent: "185, 28, 28", // Red 700
         };
       }
       return {
-        primary: "168, 85, 247", // Purple/Hazardous
-        secondary: "225, 29, 72", // Rose
+        primary: "147, 51, 234", // Purple 600
+        secondary: "219, 39, 119", // Pink 600
         accent: "126, 34, 206",
       };
     };
@@ -106,14 +107,13 @@ export default function ParticleCanvas({
         y: Math.random() * safeH,
         vx: (Math.random() - 0.4) * (0.45 + aqi * 0.002),
         vy: (Math.random() - 0.5) * (0.35 + aqi * 0.0015),
-        size: Math.random() * 2.2 + (aqi > 150 ? 1.4 : 0.8),
-        baseAlpha: Math.random() * 0.5 + 0.2,
-        alpha: Math.random() * 0.5 + 0.2,
+        size: Math.random() * 2.2 + (aqi > 150 ? 1.4 : 0.9),
+        baseAlpha: Math.random() * 0.4 + 0.35,
+        alpha: Math.random() * 0.4 + 0.35,
         colorType: i % 3 === 0 ? "clean" : i % 3 === 1 ? "medium" : "toxic",
       });
     }
 
-    // Window mouse tracking so moving over foreground text/cards still perturbs particles
     const handleGlobalMouseMove = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       if (
@@ -142,7 +142,7 @@ export default function ParticleCanvas({
 
       ctx.clearRect(0, 0, width, height);
 
-      // Radial atmospheric ambient lighting with safe radii
+      // Light theme subtle radial atmospheric background glow
       const r0 = 10;
       const r1 = Math.max(r0 + 20, width * 0.65);
       const grad = ctx.createRadialGradient(
@@ -155,17 +155,17 @@ export default function ParticleCanvas({
       );
 
       if (aqi <= 50) {
-        grad.addColorStop(0, "rgba(16, 185, 129, 0.07)");
+        grad.addColorStop(0, "rgba(16, 185, 129, 0.06)");
         grad.addColorStop(0.5, "rgba(6, 182, 212, 0.02)");
-        grad.addColorStop(1, "rgba(2, 6, 23, 0)");
+        grad.addColorStop(1, "rgba(248, 250, 252, 0)");
       } else if (aqi <= 100) {
-        grad.addColorStop(0, "rgba(234, 179, 8, 0.07)");
+        grad.addColorStop(0, "rgba(217, 119, 6, 0.06)");
         grad.addColorStop(0.5, "rgba(245, 158, 11, 0.02)");
-        grad.addColorStop(1, "rgba(2, 6, 23, 0)");
+        grad.addColorStop(1, "rgba(248, 250, 252, 0)");
       } else {
-        grad.addColorStop(0, "rgba(239, 68, 68, 0.08)");
-        grad.addColorStop(0.5, "rgba(168, 85, 247, 0.03)");
-        grad.addColorStop(1, "rgba(2, 6, 23, 0)");
+        grad.addColorStop(0, "rgba(239, 68, 68, 0.06)");
+        grad.addColorStop(0.5, "rgba(147, 51, 234, 0.02)");
+        grad.addColorStop(1, "rgba(248, 250, 252, 0)");
       }
 
       ctx.fillStyle = grad;
@@ -180,9 +180,9 @@ export default function ParticleCanvas({
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDistance) {
-            const lineAlpha = (1 - dist / maxDistance) * 0.12;
+            const lineAlpha = (1 - dist / maxDistance) * 0.16;
             ctx.strokeStyle = `rgba(${palette.secondary}, ${lineAlpha})`;
-            ctx.lineWidth = 0.6;
+            ctx.lineWidth = 0.7;
             ctx.beginPath();
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
@@ -197,7 +197,7 @@ export default function ParticleCanvas({
         p.x += p.vx + jitter;
         p.y += p.vy + jitter;
 
-        // Interaction with mouse pointer (wake vortex deflection)
+        // Wake vortex deflection
         if (mouseRef.current.active) {
           const mdx = p.x - mouseRef.current.x;
           const mdy = p.y - mouseRef.current.y;
@@ -217,7 +217,6 @@ export default function ParticleCanvas({
         if (p.y < 0) p.y = height;
         if (p.y > height) p.y = 0;
 
-        // Render particle with soft glow halo
         const color =
           p.colorType === "clean"
             ? palette.primary
@@ -228,10 +227,7 @@ export default function ParticleCanvas({
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(${color}, ${p.alpha})`;
-        ctx.shadowColor = `rgba(${color}, 0.6)`;
-        ctx.shadowBlur = p.size * 2;
         ctx.fill();
-        ctx.shadowBlur = 0;
       });
 
       animationFrameId = requestAnimationFrame(render);

@@ -21,7 +21,7 @@ interface PollutantInfo {
   primarySources: string[];
   physiologicalImpacts: string[];
   pathwayDepth: string;
-  pathwayPercent: number; // percentage down the respiratory tract
+  pathwayPercent: number;
   mechanisms: string;
 }
 
@@ -189,18 +189,18 @@ export default function PollutantMatrix() {
   const selected = POLLUTANTS.find((p) => p.id === activeTab) || POLLUTANTS[0];
 
   return (
-    <section id="pollutants" className="py-24 bg-slate-900/60 relative border-b border-slate-800/80">
+    <section id="pollutants" className="py-24 bg-white relative border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-400 uppercase tracking-widest mb-3">
-            <LayersIcon className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-mono text-emerald-800 uppercase tracking-widest mb-3 font-semibold">
+            <LayersIcon className="w-3.5 h-3.5 text-emerald-600" />
             <span>Chemical &amp; Particulate Speciation</span>
           </div>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
             The Six Criteria Pollutants
           </h2>
-          <p className="text-sm sm:text-base text-slate-400 mt-3 leading-relaxed">
+          <p className="text-sm sm:text-base text-slate-600 mt-3 leading-relaxed">
             Atmospheric air pollution is not a singular substance, but a heterogeneous cocktail of
             aerodynamic particulates, combustion derivatives, and photochemical precursors.
           </p>
@@ -214,14 +214,14 @@ export default function PollutantMatrix() {
               <button
                 key={pollutant.id}
                 onClick={() => setActiveTab(pollutant.id)}
-                className={`px-4 py-2.5 rounded-xl font-mono text-xs font-semibold transition-all duration-200 border ${
+                className={`px-4 py-2.5 rounded-xl font-mono text-xs font-semibold transition-all duration-200 border shadow-sm ${
                   isActive
-                    ? "bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.2)]"
-                    : "bg-slate-900/80 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700"
+                    ? "bg-emerald-600 text-white border-emerald-600 shadow-emerald-600/20"
+                    : "bg-slate-100/80 text-slate-700 border-slate-200 hover:bg-slate-200/60"
                 }`}
               >
-                <span className="text-white mr-1.5 font-bold">{pollutant.formula}</span>
-                <span className="hidden sm:inline text-slate-400">
+                <span className="mr-1.5 font-bold">{pollutant.formula}</span>
+                <span className="hidden sm:inline opacity-85">
                   ({pollutant.name.split(" ")[0]})
                 </span>
               </button>
@@ -230,36 +230,36 @@ export default function PollutantMatrix() {
         </div>
 
         {/* Detailed Pollutant Deep-Dive Card */}
-        <div className="bg-slate-950/80 border border-slate-800/90 rounded-3xl p-6 sm:p-10 backdrop-blur-xl shadow-2xl">
+        <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 sm:p-10 shadow-sm">
           {/* Top Info Banner */}
-          <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-8 mb-8 border-b border-slate-800 gap-6">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between pb-8 mb-8 border-b border-slate-200 gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl font-extrabold text-emerald-400 font-mono">
+                <span className="text-3xl font-extrabold text-emerald-700 font-mono">
                   {selected.formula}
                 </span>
-                <span className="text-xl font-bold text-white">
+                <span className="text-xl font-bold text-slate-900">
                   {selected.name}
                 </span>
-                <span className="text-xs font-mono uppercase px-2.5 py-1 rounded bg-slate-900 border border-slate-800 text-slate-300">
+                <span className="text-xs font-mono uppercase px-2.5 py-1 rounded bg-white border border-slate-200 text-slate-700 font-semibold shadow-2xs">
                   {selected.category}
                 </span>
               </div>
-              <p className="text-xs font-mono text-slate-400">
-                Aerodynamic Profile: <span className="text-slate-200">{selected.diameter}</span> •
-                Atmospheric Residence: <span className="text-slate-200">{selected.residenceTime}</span>
+              <p className="text-xs font-mono text-slate-600">
+                Aerodynamic Profile: <span className="text-slate-900 font-semibold">{selected.diameter}</span> •
+                Atmospheric Residence: <span className="text-slate-900 font-semibold">{selected.residenceTime}</span>
               </p>
             </div>
 
             {/* Threshold Standards Box */}
             <div className="flex items-center gap-4 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
-                <div className="text-slate-400 mb-0.5">WHO 2021 Guideline:</div>
-                <div className="text-emerald-400 font-bold">{selected.whoLimit}</div>
+              <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-slate-500 mb-0.5">WHO 2021 Guideline:</div>
+                <div className="text-emerald-700 font-bold">{selected.whoLimit}</div>
               </div>
-              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800">
-                <div className="text-slate-400 mb-0.5">US EPA Standard:</div>
-                <div className="text-cyan-400 font-bold">{selected.usEpaLimit}</div>
+              <div className="p-3 rounded-xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-slate-500 mb-0.5">US EPA Standard:</div>
+                <div className="text-cyan-700 font-bold">{selected.usEpaLimit}</div>
               </div>
             </div>
           </div>
@@ -269,47 +269,47 @@ export default function PollutantMatrix() {
             {/* Left Column: Biological Pathway Depth & Particle Scale Visualizer (5 cols) */}
             <div className="lg:col-span-5 space-y-6">
               {/* Biological Inhalation Visualizer */}
-              <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-3">
-                  <span className="flex items-center gap-2 text-slate-300">
-                    <ActivityIcon className="w-4 h-4 text-rose-400" />
+              <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                <div className="flex items-center justify-between text-xs font-mono text-slate-600 mb-3">
+                  <span className="flex items-center gap-2 text-slate-800 font-semibold">
+                    <ActivityIcon className="w-4 h-4 text-rose-600" />
                     Respiratory Penetration Depth
                   </span>
-                  <span className="text-rose-400 font-bold">{selected.pathwayDepth}</span>
+                  <span className="text-rose-700 font-bold">{selected.pathwayDepth}</span>
                 </div>
 
                 {/* Respiratory Tract Progression Meter */}
-                <div className="w-full bg-slate-950 p-4 rounded-xl border border-slate-800/80 space-y-3">
+                <div className="w-full bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-3">
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-slate-400">1. Nasopharynx (Upper Airways)</span>
-                    <span className="text-slate-400">Filtered</span>
+                    <span className="text-slate-600">1. Nasopharynx (Upper Airways)</span>
+                    <span className="text-slate-500 font-medium">Filtered</span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-slate-400">2. Trachea &amp; Main Bronchi</span>
-                    <span className={selected.pathwayPercent >= 50 ? "text-amber-400 font-semibold" : "text-slate-600"}>
+                    <span className="text-slate-600">2. Trachea &amp; Main Bronchi</span>
+                    <span className={selected.pathwayPercent >= 50 ? "text-amber-700 font-semibold" : "text-slate-400"}>
                       {selected.pathwayPercent >= 50 ? "Trapped / Irritated" : "Bypassed"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-slate-400">3. Bronchioles</span>
-                    <span className={selected.pathwayPercent >= 65 ? "text-orange-400 font-semibold" : "text-slate-600"}>
+                    <span className="text-slate-600">3. Bronchioles</span>
+                    <span className={selected.pathwayPercent >= 65 ? "text-orange-700 font-semibold" : "text-slate-400"}>
                       {selected.pathwayPercent >= 65 ? "Inflammation" : "Clear"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-slate-400">4. Alveolar Gas Exchange Sacs</span>
-                    <span className={selected.pathwayPercent >= 85 ? "text-rose-400 font-bold" : "text-slate-600"}>
+                    <span className="text-slate-600">4. Alveolar Gas Exchange Sacs</span>
+                    <span className={selected.pathwayPercent >= 85 ? "text-rose-700 font-bold" : "text-slate-400"}>
                       {selected.pathwayPercent >= 85 ? "Translocation" : "Clear"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-[11px] font-mono">
-                    <span className="text-slate-400">5. Systemic Vascular Circulation</span>
-                    <span className={selected.pathwayPercent >= 95 ? "text-red-500 font-bold" : "text-slate-600"}>
+                    <span className="text-slate-600">5. Systemic Vascular Circulation</span>
+                    <span className={selected.pathwayPercent >= 95 ? "text-red-700 font-bold" : "text-slate-400"}>
                       {selected.pathwayPercent >= 95 ? "Bloodstream Entry" : "None"}
                     </span>
                   </div>
 
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden mt-2">
+                  <div className="w-full h-2 bg-slate-200 rounded-full overflow-hidden mt-2">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-600 transition-all duration-500"
                       style={{ width: `${selected.pathwayPercent}%` }}
@@ -319,32 +319,32 @@ export default function PollutantMatrix() {
               </div>
 
               {/* Aerodynamic Particle Scale Diagram */}
-              <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-                <div className="text-xs font-mono text-slate-300 mb-3 flex items-center justify-between">
+              <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                <div className="text-xs font-mono text-slate-800 mb-3 flex items-center justify-between font-semibold">
                   <span>Relative Particle Scale Reference</span>
-                  <span className="text-slate-400">Geometric Micrometers</span>
+                  <span className="text-slate-500 font-normal">Geometric Micrometers</span>
                 </div>
-                <div className="relative w-full h-32 bg-slate-950 rounded-xl border border-slate-800/80 p-3 flex items-center justify-around overflow-hidden">
+                <div className="relative w-full h-32 bg-slate-50 rounded-xl border border-slate-200 p-3 flex items-center justify-around overflow-hidden">
                   {/* Human Hair representation */}
                   <div className="flex flex-col items-center">
-                    <div className="w-20 h-20 rounded-full border border-dashed border-slate-600 bg-slate-800/30 flex items-center justify-center text-[10px] font-mono text-slate-400">
+                    <div className="w-20 h-20 rounded-full border border-dashed border-slate-400 bg-white flex items-center justify-center text-[10px] font-mono text-slate-600 font-medium">
                       70 µm
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 mt-1">Human Hair</span>
+                    <span className="text-[10px] font-mono text-slate-600 mt-1">Human Hair</span>
                   </div>
 
                   {/* PM10 representation */}
                   <div className="flex flex-col items-center">
-                    <div className="w-8 h-8 rounded-full border border-amber-500/50 bg-amber-500/20 flex items-center justify-center text-[9px] font-mono text-amber-300">
+                    <div className="w-8 h-8 rounded-full border border-amber-400 bg-amber-100 flex items-center justify-center text-[9px] font-mono text-amber-800 font-bold">
                       10µm
                     </div>
-                    <span className="text-[10px] font-mono text-amber-300/80 mt-1">PM10 (Pollen)</span>
+                    <span className="text-[10px] font-mono text-amber-800 mt-1">PM10 (Pollen)</span>
                   </div>
 
                   {/* PM2.5 representation */}
                   <div className="flex flex-col items-center">
-                    <div className="w-3 h-3 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-                    <span className="text-[10px] font-mono text-emerald-400 mt-2 font-bold">
+                    <div className="w-3.5 h-3.5 rounded-full bg-emerald-600 shadow-sm" />
+                    <span className="text-[10px] font-mono text-emerald-800 mt-2 font-bold">
                       2.5 µm (Soot)
                     </span>
                   </div>
@@ -355,12 +355,12 @@ export default function PollutantMatrix() {
             {/* Right Column: Pathophysiology & Sources (7 cols) */}
             <div className="lg:col-span-7 space-y-6">
               {/* Biochemical Mechanisms */}
-              <div className="p-6 rounded-2xl bg-slate-900/70 border border-slate-800">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-300 mb-2">
-                  <CpuIcon className="w-4 h-4 text-emerald-400" />
+              <div className="p-6 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-slate-800 mb-2 font-semibold">
+                  <CpuIcon className="w-4 h-4 text-emerald-600" />
                   <span>Biochemical &amp; Cellular Toxicity Mechanism</span>
                 </div>
-                <p className="text-sm text-slate-300 leading-relaxed font-sans">
+                <p className="text-sm text-slate-700 leading-relaxed font-sans">
                   {selected.mechanisms}
                 </p>
               </div>
@@ -368,18 +368,18 @@ export default function PollutantMatrix() {
               {/* Primary Sources & Health Impact in 2 cards */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Primary Emission Sources */}
-                <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-                  <div className="text-xs font-mono uppercase tracking-wider text-slate-300 mb-3 flex items-center gap-2">
-                    <BarChart3Icon className="w-3.5 h-3.5 text-cyan-400" />
+                <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="text-xs font-mono uppercase tracking-wider text-slate-800 mb-3 flex items-center gap-2 font-semibold">
+                    <BarChart3Icon className="w-3.5 h-3.5 text-cyan-600" />
                     <span>Urban Emission Vectors</span>
                   </div>
                   <ul className="space-y-2">
                     {selected.primarySources.map((src, i) => (
                       <li
                         key={i}
-                        className="text-xs text-slate-300 flex items-start gap-2"
+                        className="text-xs text-slate-700 flex items-start gap-2"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 mt-1.5 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-cyan-600 mt-1.5 shrink-0" />
                         <span>{src}</span>
                       </li>
                     ))}
@@ -387,18 +387,18 @@ export default function PollutantMatrix() {
                 </div>
 
                 {/* Clinical & Epidemiological Outcomes */}
-                <div className="p-5 rounded-2xl bg-slate-900/70 border border-slate-800">
-                  <div className="text-xs font-mono uppercase tracking-wider text-slate-300 mb-3 flex items-center gap-2">
-                    <ShieldAlertIcon className="w-3.5 h-3.5 text-rose-400" />
+                <div className="p-5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                  <div className="text-xs font-mono uppercase tracking-wider text-slate-800 mb-3 flex items-center gap-2 font-semibold">
+                    <ShieldAlertIcon className="w-3.5 h-3.5 text-rose-600" />
                     <span>Clinical Outcomes</span>
                   </div>
                   <ul className="space-y-2">
                     {selected.physiologicalImpacts.map((imp, i) => (
                       <li
                         key={i}
-                        className="text-xs text-slate-300 flex items-start gap-2"
+                        className="text-xs text-slate-700 flex items-start gap-2"
                       >
-                        <span className="w-1.5 h-1.5 rounded-full bg-rose-400 mt-1.5 shrink-0" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-rose-600 mt-1.5 shrink-0" />
                         <span>{imp}</span>
                       </li>
                     ))}

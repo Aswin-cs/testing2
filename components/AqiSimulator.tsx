@@ -9,8 +9,6 @@ import {
   CompassIcon,
   ShieldCheckIcon,
   ShieldAlertIcon,
-  AlertCircleIcon,
-  CheckCircleIcon,
   SlidersIcon,
 } from "./Icons";
 
@@ -148,16 +146,15 @@ export default function AqiSimulator() {
     setManualOverride(true);
   };
 
-  // Derive status details based on current AQI
   const getAqiDetails = (val: number) => {
     if (val <= 50) {
       return {
         label: "Good",
         subtitle: "Minimal Risk • Optimal Cellular Respiration",
-        textColor: "text-emerald-400",
-        borderColor: "border-emerald-500/40",
-        bgColor: "bg-emerald-500/10",
-        ringColor: "#10b981",
+        textColor: "text-emerald-700",
+        borderColor: "border-emerald-300",
+        bgColor: "bg-emerald-50",
+        ringColor: "#059669",
         guidance: "Air quality is considered satisfactory; atmospheric pollution poses negligible risk.",
         respirator: "Unrestricted outdoor ventilatory activity.",
         ventilation: "Full natural cross-ventilation encouraged.",
@@ -167,10 +164,10 @@ export default function AqiSimulator() {
       return {
         label: "Moderate",
         subtitle: "Acceptable • Minor Respiratory Irritation Potential",
-        textColor: "text-amber-400",
-        borderColor: "border-amber-500/40",
-        bgColor: "bg-amber-500/10",
-        ringColor: "#f59e0b",
+        textColor: "text-amber-700",
+        borderColor: "border-amber-300",
+        bgColor: "bg-amber-50",
+        ringColor: "#d97706",
         guidance: "Air quality is acceptable; unusually sensitive individuals may experience mild cough.",
         respirator: "Sensitive groups should limit prolonged heavy outdoor exertion.",
         ventilation: "Standard window ventilation; indoor HEPA optional.",
@@ -180,10 +177,10 @@ export default function AqiSimulator() {
       return {
         label: "Unhealthy for Sensitive Groups",
         subtitle: "Heightened Vulnerability • Micro-Particulate Stress",
-        textColor: "text-orange-400",
-        borderColor: "border-orange-500/40",
-        bgColor: "bg-orange-500/10",
-        ringColor: "#f97316",
+        textColor: "text-orange-700",
+        borderColor: "border-orange-300",
+        bgColor: "bg-orange-50",
+        ringColor: "#ea580c",
         guidance: "Members of sensitive groups may experience physiological effects; general public is less affected.",
         respirator: "Sensitive groups should wear particulate filtering masks (KF94/FFP2).",
         ventilation: "Seal building envelopes; activate primary filtration systems.",
@@ -193,10 +190,10 @@ export default function AqiSimulator() {
       return {
         label: "Unhealthy",
         subtitle: "Systemic Impact • Elevated Cardiac Burden",
-        textColor: "text-rose-400",
-        borderColor: "border-rose-500/40",
-        bgColor: "bg-rose-500/10",
-        ringColor: "#f43f5e",
+        textColor: "text-rose-700",
+        borderColor: "border-rose-300",
+        bgColor: "bg-rose-50",
+        ringColor: "#e11d48",
         guidance: "Everyone may begin to experience adverse health effects; sensitive groups suffer serious symptoms.",
         respirator: "N95/FFP2 certified respirators strongly advised outdoors.",
         ventilation: "Closed loop internal HVAC with MERV-16 or HEPA H13 stages.",
@@ -206,10 +203,10 @@ export default function AqiSimulator() {
       return {
         label: "Very Unhealthy",
         subtitle: "Emergency Conditions • Alveolar Inflammatory Cascade",
-        textColor: "text-purple-400",
-        borderColor: "border-purple-500/40",
-        bgColor: "bg-purple-500/10",
-        ringColor: "#a855f7",
+        textColor: "text-purple-700",
+        borderColor: "border-purple-300",
+        bgColor: "bg-purple-50",
+        ringColor: "#9333ea",
         guidance: "Health alert: high risk of acute respiratory distress across entire metropolitan population.",
         respirator: "Continuous N99/P100 respirators required for outdoor transit.",
         ventilation: "Hermetic indoor positive-pressure filtration advised.",
@@ -218,10 +215,10 @@ export default function AqiSimulator() {
     return {
       label: "Hazardous",
       subtitle: "Severe Toxic Inversion • Critical Alert",
-      textColor: "text-red-500",
-      borderColor: "border-red-600/50",
-      bgColor: "bg-red-600/15",
-      ringColor: "#ef4444",
+      textColor: "text-red-700",
+      borderColor: "border-red-300",
+      bgColor: "bg-red-50",
+      ringColor: "#dc2626",
       guidance: "Emergency warning: catastrophic atmospheric stagnation. Entire population susceptible to severe toxicity.",
       respirator: "Outdoor confinement mandated; industrial respirators mandatory.",
       ventilation: "Critical isolation; multi-stage gas & aerosol scrubbing.",
@@ -230,15 +227,12 @@ export default function AqiSimulator() {
 
   const details = getAqiDetails(activeAqi);
 
-  // SVG Gauge calculations
   const radius = 88;
   const circumference = 2 * Math.PI * radius;
-  // Arc covers 260 degrees (from 140deg to 400deg)
   const maxArcValue = 500;
   const strokePercentage = Math.min(1, Math.max(0, activeAqi / maxArcValue));
   const dashoffset = circumference * (1 - strokePercentage * 0.75);
 
-  // Scale pollutant values when in manual override
   const scale = manualOverride ? activeAqi / (selectedCity.aqi || 1) : 1;
   const currentPm25 = (selectedCity.pm25 * scale).toFixed(1);
   const currentPm10 = (selectedCity.pm10 * scale).toFixed(1);
@@ -248,46 +242,43 @@ export default function AqiSimulator() {
   const currentSo2 = (selectedCity.so2 * scale).toFixed(1);
 
   return (
-    <section id="simulator" className="py-24 bg-slate-950 relative border-b border-slate-800/80">
-      {/* Background Lighting */}
-      <div className="absolute top-1/2 left-1/3 -translate-y-1/2 w-[600px] h-[600px] bg-slate-900/60 blur-[180px] pointer-events-none rounded-full" />
-
+    <section id="simulator" className="py-24 bg-slate-100/70 relative border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-slate-800/80 gap-6">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 pb-6 border-b border-slate-200 gap-6">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-400 uppercase tracking-widest mb-3">
-              <GaugeIcon className="w-3.5 h-3.5 text-emerald-400" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-xs font-mono text-emerald-800 uppercase tracking-widest mb-3 font-semibold">
+              <GaugeIcon className="w-3.5 h-3.5 text-emerald-600" />
               <span>Interactive Atmospheric Laboratory</span>
             </div>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
               Real-Time AQI &amp; Particulate Simulator
             </h2>
-            <p className="text-sm sm:text-base text-slate-400 mt-2 max-w-xl">
+            <p className="text-sm sm:text-base text-slate-600 mt-2 max-w-xl">
               Inspect telemetric air quality indices across representative metropolitan centers
               or manually perturb atmospheric stress levels to test physiological thresholds.
             </p>
           </div>
 
           {/* Mode Switch Status */}
-          <div className="flex items-center gap-3 bg-slate-900/90 border border-slate-800 p-2 rounded-xl text-xs font-mono">
-            <span className="text-slate-400 pl-2">Mode:</span>
+          <div className="flex items-center gap-2 bg-white border border-slate-200 p-1.5 rounded-xl text-xs font-mono shadow-sm">
+            <span className="text-slate-500 pl-2">Mode:</span>
             <button
               onClick={() => setManualOverride(false)}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1.5 rounded-lg transition-all font-medium ${
                 !manualOverride
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Station Presets
             </button>
             <button
               onClick={() => setManualOverride(true)}
-              className={`px-3 py-1.5 rounded-lg transition-all ${
+              className={`px-3 py-1.5 rounded-lg transition-all font-medium ${
                 manualOverride
-                  ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
-                  : "text-slate-400 hover:text-white"
+                  ? "bg-emerald-600 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
               }`}
             >
               Manual Dial
@@ -297,7 +288,7 @@ export default function AqiSimulator() {
 
         {/* City Switcher Bar */}
         <div className="mb-10">
-          <div className="text-xs font-mono text-slate-400 uppercase tracking-wider mb-3 flex items-center justify-between">
+          <div className="text-xs font-mono text-slate-500 uppercase tracking-wider mb-3 flex items-center justify-between font-semibold">
             <span>Metropolitan Sensor Arrays</span>
             <span>Select Station</span>
           </div>
@@ -308,31 +299,31 @@ export default function AqiSimulator() {
                 <button
                   key={city.name}
                   onClick={() => handleCitySelect(city)}
-                  className={`p-3.5 rounded-xl border text-left transition-all duration-200 ${
+                  className={`p-3.5 rounded-xl border text-left transition-all duration-200 shadow-sm ${
                     isSelected
-                      ? "bg-slate-800/90 border-emerald-500/60 shadow-[0_0_15px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-slate-900/60 border-slate-800/80 hover:bg-slate-800/50 hover:border-slate-700"
+                      ? "bg-white border-emerald-500 ring-2 ring-emerald-500/20 shadow-md"
+                      : "bg-white/90 border-slate-200 hover:bg-white hover:border-slate-300"
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-sm text-white">
+                    <span className="font-semibold text-sm text-slate-900">
                       {city.name}
                     </span>
                     <span
                       className={`text-xs font-mono font-bold ${
                         city.aqi <= 50
-                          ? "text-emerald-400"
+                          ? "text-emerald-600"
                           : city.aqi <= 100
-                          ? "text-amber-400"
+                          ? "text-amber-600"
                           : city.aqi <= 200
-                          ? "text-orange-400"
-                          : "text-rose-500"
+                          ? "text-orange-600"
+                          : "text-rose-600"
                       }`}
                     >
                       {city.aqi}
                     </span>
                   </div>
-                  <div className="text-[11px] font-mono text-slate-400 truncate">
+                  <div className="text-[11px] font-mono text-slate-500 truncate">
                     {city.country}
                   </div>
                 </button>
@@ -344,14 +335,14 @@ export default function AqiSimulator() {
         {/* Interactive Main Control Deck */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Left Column: Interactive Circular Dial & Slider (5 cols) */}
-          <div className="lg:col-span-5 bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 sm:p-8 backdrop-blur-md shadow-2xl relative">
-            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-800/80">
-              <span className="text-xs font-mono uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                <SlidersIcon className="w-3.5 h-3.5 text-emerald-400" />
+          <div className="lg:col-span-5 bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm relative">
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-100">
+              <span className="text-xs font-mono uppercase tracking-widest text-slate-500 flex items-center gap-2 font-semibold">
+                <SlidersIcon className="w-3.5 h-3.5 text-emerald-600" />
                 Index Radiometer
               </span>
               <span
-                className={`text-xs font-mono uppercase px-2.5 py-1 rounded-md border ${details.bgColor} ${details.borderColor} ${details.textColor}`}
+                className={`text-xs font-mono uppercase px-2.5 py-1 rounded-md border font-semibold ${details.bgColor} ${details.borderColor} ${details.textColor}`}
               >
                 {details.label}
               </span>
@@ -361,19 +352,17 @@ export default function AqiSimulator() {
             <div className="relative flex flex-col items-center justify-center my-4">
               <div className="relative w-64 h-64 flex items-center justify-center">
                 <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 200 200">
-                  {/* Track ring */}
                   <circle
                     cx="100"
                     cy="100"
                     r={radius}
-                    className="stroke-slate-800"
+                    className="stroke-slate-100"
                     strokeWidth="14"
                     fill="transparent"
                     strokeDasharray={circumference * 0.75}
                     strokeDashoffset="0"
                     strokeLinecap="round"
                   />
-                  {/* Active gauge ring */}
                   <circle
                     cx="100"
                     cy="100"
@@ -385,38 +374,35 @@ export default function AqiSimulator() {
                     strokeDashoffset={dashoffset}
                     strokeLinecap="round"
                     className="transition-all duration-300 ease-out"
-                    style={{
-                      filter: `drop-shadow(0 0 8px ${details.ringColor}60)`,
-                    }}
                   />
                 </svg>
 
                 {/* Inside Dial Center readout */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                  <span className="text-xs font-mono text-slate-400 uppercase tracking-widest">
+                  <span className="text-xs font-mono text-slate-500 uppercase tracking-widest font-semibold">
                     AQI Value
                   </span>
-                  <span className="text-6xl font-black text-white font-mono tracking-tighter my-1">
+                  <span className="text-6xl font-black text-slate-900 font-mono tracking-tighter my-1">
                     {activeAqi}
                   </span>
-                  <span className={`text-xs font-mono font-medium ${details.textColor}`}>
+                  <span className={`text-xs font-mono font-semibold ${details.textColor}`}>
                     {details.subtitle.split("•")[0]}
                   </span>
                 </div>
               </div>
 
               <div className="text-center mt-2">
-                <p className="text-xs text-slate-400 font-mono">
+                <p className="text-xs text-slate-500 font-mono">
                   Scale: 0 (Ultra Pristine) — 500 (Severe Toxic Stagnation)
                 </p>
               </div>
             </div>
 
             {/* Manual Stress Slider */}
-            <div className="mt-8 pt-6 border-t border-slate-800">
+            <div className="mt-8 pt-6 border-t border-slate-100">
               <div className="flex items-center justify-between text-xs font-mono mb-2">
-                <span className="text-slate-300 font-medium">Perturb AQI Index Manually:</span>
-                <span className="text-emerald-400 font-bold">{activeAqi} / 500</span>
+                <span className="text-slate-800 font-medium">Perturb AQI Index Manually:</span>
+                <span className="text-emerald-700 font-bold">{activeAqi} / 500</span>
               </div>
               <input
                 type="range"
@@ -424,9 +410,9 @@ export default function AqiSimulator() {
                 max="500"
                 value={activeAqi}
                 onChange={(e) => handleSliderChange(Number(e.target.value))}
-                className="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-400"
+                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600"
               />
-              <div className="flex justify-between text-[10px] font-mono text-slate-400 mt-1">
+              <div className="flex justify-between text-[10px] font-mono text-slate-500 mt-1 font-medium">
                 <span>0</span>
                 <span>50</span>
                 <span>100</span>
@@ -438,40 +424,40 @@ export default function AqiSimulator() {
             </div>
 
             {/* Atmospheric Microclimate Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-6 pt-6 border-t border-slate-800 text-center">
-              <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
-                <div className="flex items-center justify-center gap-1 text-slate-400 text-[11px] mb-1">
-                  <ThermometerIcon className="w-3 h-3 text-cyan-400" />
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-6 pt-6 border-t border-slate-100 text-center">
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-center gap-1 text-slate-500 text-[11px] mb-1 font-medium">
+                  <ThermometerIcon className="w-3 h-3 text-cyan-600" />
                   <span>Temp</span>
                 </div>
-                <div className="text-sm font-bold font-mono text-white">
+                <div className="text-sm font-bold font-mono text-slate-900">
                   {selectedCity.temp}°C
                 </div>
               </div>
-              <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
-                <div className="flex items-center justify-center gap-1 text-slate-400 text-[11px] mb-1">
-                  <DropletsIcon className="w-3 h-3 text-cyan-400" />
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-center gap-1 text-slate-500 text-[11px] mb-1 font-medium">
+                  <DropletsIcon className="w-3 h-3 text-cyan-600" />
                   <span>Humidity</span>
                 </div>
-                <div className="text-sm font-bold font-mono text-white">
+                <div className="text-sm font-bold font-mono text-slate-900">
                   {selectedCity.humidity}%
                 </div>
               </div>
-              <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
-                <div className="flex items-center justify-center gap-1 text-slate-400 text-[11px] mb-1">
-                  <WindIcon className="w-3 h-3 text-teal-400" />
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-center gap-1 text-slate-500 text-[11px] mb-1 font-medium">
+                  <WindIcon className="w-3 h-3 text-teal-600" />
                   <span>Wind</span>
                 </div>
-                <div className="text-sm font-bold font-mono text-white">
+                <div className="text-sm font-bold font-mono text-slate-900">
                   {selectedCity.windSpeed} km/h
                 </div>
               </div>
-              <div className="p-2.5 rounded-lg bg-slate-950/60 border border-slate-800">
-                <div className="flex items-center justify-center gap-1 text-slate-400 text-[11px] mb-1">
-                  <CompassIcon className="w-3 h-3 text-emerald-400" />
+              <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200">
+                <div className="flex items-center justify-center gap-1 text-slate-500 text-[11px] mb-1 font-medium">
+                  <CompassIcon className="w-3 h-3 text-emerald-600" />
                   <span>Pressure</span>
                 </div>
-                <div className="text-sm font-bold font-mono text-white">
+                <div className="text-sm font-bold font-mono text-slate-900">
                   {selectedCity.pressure} hPa
                 </div>
               </div>
@@ -482,7 +468,7 @@ export default function AqiSimulator() {
           <div className="lg:col-span-7 space-y-6">
             {/* Health & Clinical Directives Box */}
             <div
-              className={`p-6 rounded-2xl border backdrop-blur-md transition-all duration-300 ${details.bgColor} ${details.borderColor}`}
+              className={`p-6 rounded-2xl border transition-all duration-300 shadow-sm ${details.bgColor} ${details.borderColor}`}
             >
               <div className="flex items-center gap-3 mb-3">
                 {activeAqi <= 100 ? (
@@ -490,31 +476,31 @@ export default function AqiSimulator() {
                 ) : (
                   <ShieldAlertIcon className={`w-5 h-5 ${details.textColor}`} />
                 )}
-                <span className="font-mono text-xs font-bold uppercase tracking-widest text-slate-300">
+                <span className="font-mono text-xs font-bold uppercase tracking-widest text-slate-700">
                   Epidemiological Health Guidance
                 </span>
               </div>
               <h3 className={`text-xl font-bold mb-2 ${details.textColor}`}>
                 {details.subtitle}
               </h3>
-              <p className="text-sm text-slate-200 leading-relaxed mb-4">
+              <p className="text-sm text-slate-700 leading-relaxed mb-4">
                 {details.guidance}
               </p>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-white/10 text-xs">
-                <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                  <span className="text-slate-400 font-mono block mb-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-slate-200/80 text-xs">
+                <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
+                  <span className="text-slate-500 font-mono block mb-1 font-semibold">
                     Protective Barrier Protocol:
                   </span>
-                  <span className="text-slate-200 font-medium">
+                  <span className="text-slate-800 font-medium">
                     {details.respirator}
                   </span>
                 </div>
-                <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800/80">
-                  <span className="text-slate-400 font-mono block mb-1">
+                <div className="p-3 rounded-xl bg-white border border-slate-200/80 shadow-sm">
+                  <span className="text-slate-500 font-mono block mb-1 font-semibold">
                     Building Enclosure Protocol:
                   </span>
-                  <span className="text-slate-200 font-medium">
+                  <span className="text-slate-800 font-medium">
                     {details.ventilation}
                   </span>
                 </div>
@@ -522,12 +508,12 @@ export default function AqiSimulator() {
             </div>
 
             {/* Speciated Pollutants Breakdown Matrix */}
-            <div className="bg-slate-900/70 border border-slate-800/90 rounded-2xl p-6 backdrop-blur-md shadow-2xl">
-              <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-800">
-                <span className="text-xs font-mono uppercase tracking-widest text-slate-400">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
+              <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
+                <span className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold">
                   Speciated Particulate &amp; Gas Concentrations
                 </span>
-                <span className="text-xs font-mono text-slate-400">
+                <span className="text-xs font-mono text-slate-500 font-medium">
                   WHO 2021 Reference Benchmark
                 </span>
               </div>
@@ -536,15 +522,15 @@ export default function AqiSimulator() {
                 {/* PM2.5 */}
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono mb-1.5">
-                    <span className="text-white font-semibold">
+                    <span className="text-slate-900 font-semibold">
                       Fine Particulate Matter (PM2.5)
                     </span>
-                    <span className="text-slate-200">
-                      <strong className="text-emerald-400">{currentPm25}</strong> µg/m³
-                      <span className="text-slate-400 ml-1.5">(WHO limit: 5 µg/m³)</span>
+                    <span className="text-slate-700">
+                      <strong className="text-emerald-700">{currentPm25}</strong> µg/m³
+                      <span className="text-slate-500 ml-1.5">(WHO limit: 5 µg/m³)</span>
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 transition-all duration-300"
                       style={{
@@ -557,15 +543,15 @@ export default function AqiSimulator() {
                 {/* PM10 */}
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono mb-1.5">
-                    <span className="text-white font-semibold">
+                    <span className="text-slate-900 font-semibold">
                       Coarse Inhalable Matter (PM10)
                     </span>
-                    <span className="text-slate-200">
-                      <strong className="text-emerald-400">{currentPm10}</strong> µg/m³
-                      <span className="text-slate-400 ml-1.5">(WHO limit: 15 µg/m³)</span>
+                    <span className="text-slate-700">
+                      <strong className="text-emerald-700">{currentPm10}</strong> µg/m³
+                      <span className="text-slate-500 ml-1.5">(WHO limit: 15 µg/m³)</span>
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 transition-all duration-300"
                       style={{
@@ -578,15 +564,15 @@ export default function AqiSimulator() {
                 {/* NO2 */}
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono mb-1.5">
-                    <span className="text-white font-semibold">
+                    <span className="text-slate-900 font-semibold">
                       Nitrogen Dioxide (NO₂)
                     </span>
-                    <span className="text-slate-200">
-                      <strong className="text-emerald-400">{currentNo2}</strong> µg/m³
-                      <span className="text-slate-400 ml-1.5">(WHO limit: 25 µg/m³)</span>
+                    <span className="text-slate-700">
+                      <strong className="text-emerald-700">{currentNo2}</strong> µg/m³
+                      <span className="text-slate-500 ml-1.5">(WHO limit: 25 µg/m³)</span>
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 transition-all duration-300"
                       style={{
@@ -599,15 +585,15 @@ export default function AqiSimulator() {
                 {/* O3 */}
                 <div>
                   <div className="flex items-center justify-between text-xs font-mono mb-1.5">
-                    <span className="text-white font-semibold">
+                    <span className="text-slate-900 font-semibold">
                       Tropospheric Ozone (O₃)
                     </span>
-                    <span className="text-slate-200">
-                      <strong className="text-emerald-400">{currentO3}</strong> µg/m³
-                      <span className="text-slate-400 ml-1.5">(WHO limit: 60 µg/m³)</span>
+                    <span className="text-slate-700">
+                      <strong className="text-emerald-700">{currentO3}</strong> µg/m³
+                      <span className="text-slate-500 ml-1.5">(WHO limit: 60 µg/m³)</span>
                     </span>
                   </div>
-                  <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                  <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-emerald-500 via-amber-500 to-rose-500 transition-all duration-300"
                       style={{
@@ -619,22 +605,22 @@ export default function AqiSimulator() {
 
                 {/* Carbon Monoxide & Sulfur Dioxide in a 2-col row */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
-                    <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
-                      <span>Carbon Monoxide (CO)</span>
-                      <span className="text-white font-bold">{currentCo} mg/m³</span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-mono text-slate-600 mb-1">
+                      <span className="font-medium">Carbon Monoxide (CO)</span>
+                      <span className="text-slate-900 font-bold">{currentCo} mg/m³</span>
                     </div>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-slate-500">
                       WHO 24h Threshold: 4.0 mg/m³
                     </span>
                   </div>
 
-                  <div className="p-3 rounded-xl bg-slate-950/70 border border-slate-800">
-                    <div className="flex items-center justify-between text-xs font-mono text-slate-400 mb-1">
-                      <span>Sulfur Dioxide (SO₂)</span>
-                      <span className="text-white font-bold">{currentSo2} µg/m³</span>
+                  <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                    <div className="flex items-center justify-between text-xs font-mono text-slate-600 mb-1">
+                      <span className="font-medium">Sulfur Dioxide (SO₂)</span>
+                      <span className="text-slate-900 font-bold">{currentSo2} µg/m³</span>
                     </div>
-                    <span className="text-[11px] text-slate-400">
+                    <span className="text-[11px] text-slate-500">
                       WHO 24h Threshold: 40 µg/m³
                     </span>
                   </div>

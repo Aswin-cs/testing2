@@ -8,8 +8,8 @@ async function build() {
   const baseCss = `@import "tailwindcss";
 
 :root {
-  --background: #020617;
-  --foreground: #f8fafc;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
 body {
@@ -19,19 +19,19 @@ body {
   overflow-x: hidden;
 }
 
-/* Custom premium scrollbar */
+/* Custom premium light scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #020617;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
+  background: #cbd5e1;
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: #94a3b8;
 }
 
 /* Atmospheric glow and gradient animations */
@@ -90,7 +90,7 @@ body {
   const candidates = Array.from(scanner.scan());
   console.log(`Found ${candidates.length} unique utility candidates.`);
 
-  console.log('Compiling Tailwind CSS v4...');
+  console.log('Compiling Tailwind CSS v4 in Light Theme...');
   const compiler = await compile(baseCss, {
     base: root,
     onDependency: () => {},
