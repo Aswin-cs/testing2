@@ -221,8 +221,8 @@ export default function ParticleCanvas({
           p.colorType === "clean"
             ? palette.primary
             : p.colorType === "medium"
-            ? palette.secondary
-            : palette.accent;
+              ? palette.secondary
+              : palette.accent;
 
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);

@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { ActivityIcon, WindIcon } from "./Icons";
+import Link from "next/link";
+import { useSession, signOut } from "next-auth/react";
+import { ActivityIcon, WindIcon, UserIcon, LogOutIcon } from "./Icons";
 
 export default function Navbar() {
+  const { data: session, status } = useSession();
   const [time, setTime] = useState<string>("");
   const [scrolled, setScrolled] = useState(false);
 
@@ -37,7 +40,7 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand */}
-        <a href="#" className="flex items-center gap-3 group">
+        <Link href="/" className="flex items-center gap-3 group">
           <div className="w-9 h-9 rounded-lg bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 group-hover:border-emerald-400 transition-all duration-300 shadow-sm">
             <WindIcon className="w-5 h-5 text-emerald-600" />
           </div>
@@ -54,10 +57,10 @@ export default function Navbar() {
               Urban Atmospheric Observatory
             </p>
           </div>
-        </a>
+        </Link>
 
         {/* Live Network & Clock HUD */}
-        <div className="hidden lg:flex items-center gap-6 text-xs font-mono text-slate-600">
+        <div className="hidden xl:flex items-center gap-6 text-xs font-mono text-slate-600">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
             <span className="text-slate-800 font-medium">4,892 SENSORS ONLINE</span>
@@ -71,47 +74,75 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Navigation & Action */}
-        <nav className="flex items-center gap-6">
-          <div className="hidden md:flex items-center gap-5 text-xs uppercase tracking-wider font-mono text-slate-600">
+        {/* Navigation & Auth */}
+        <nav className="flex items-center gap-4 sm:gap-6">
+          <div className="hidden lg:flex items-center gap-5 text-xs uppercase tracking-wider font-mono text-slate-600">
             <a
-              href="#simulator"
+              href="/#simulator"
               className="hover:text-emerald-600 transition-colors py-1 font-medium"
             >
               Simulator
             </a>
             <a
-              href="#pollutants"
+              href="/#pollutants"
               className="hover:text-emerald-600 transition-colors py-1 font-medium"
             >
               Pollutants
             </a>
             <a
-              href="#anatomy"
+              href="/#anatomy"
               className="hover:text-emerald-600 transition-colors py-1 font-medium"
             >
               Canyon Dynamics
             </a>
             <a
-              href="#metrology"
+              href="/#metrology"
               className="hover:text-emerald-600 transition-colors py-1 font-medium"
             >
               Metrology
             </a>
-            <a
-              href="#solutions"
-              className="hover:text-emerald-600 transition-colors py-1 font-medium"
-            >
-              Interventions
-            </a>
           </div>
 
-          <a
-            href="#simulator"
-            className="text-xs uppercase tracking-wider font-mono font-semibold px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-all duration-200 shadow-sm hover:shadow active:scale-95"
-          >
-            Launch Lab
-          </a>
+          {/* Authentication State */}
+          <div className="flex items-center gap-2.5">
+            {status === "authenticated" && session?.user ? (
+              <div className="flex items-center gap-2 bg-emerald-50/80 border border-emerald-200 px-3 py-1.5 rounded-xl shadow-2xs">
+                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                <span className="text-xs font-mono font-bold text-slate-900 max-w-[120px] truncate">
+                  {session.user.name?.split(" ")[0] || "Observer"}
+                </span>
+                <button
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                  title="Sign Out"
+                  className="p-1 rounded-lg hover:bg-emerald-100 text-slate-600 hover:text-slate-900 transition-colors"
+                >
+                  <LogOutIcon className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            ) : (
+              <>
+                <Link
+                  href="/auth/signin"
+                  className="text-xs font-mono font-semibold px-3.5 py-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-all shadow-2xs"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="text-xs font-mono font-semibold px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm active:scale-95"
+                >
+                  Sign Up
+                </Link>
+              </>
+            )}
+
+            <a
+              href="/#simulator"
+              className="hidden sm:inline-flex text-xs uppercase tracking-wider font-mono font-semibold px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white transition-all duration-200 shadow-sm active:scale-95"
+            >
+              Launch Lab
+            </a>
+          </div>
         </nav>
       </div>
     </header>

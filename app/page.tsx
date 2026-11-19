@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
+import HighSubmittedContainer from "@/components/HighSubmittedContainer";
 import AqiSimulator from "@/components/AqiSimulator";
 import PollutantMatrix from "@/components/PollutantMatrix";
 import UrbanAnatomy from "@/components/UrbanAnatomy";
@@ -13,6 +14,7 @@ export default function Home() {
     <main className="min-h-screen bg-slate-50 text-slate-900 flex flex-col selection:bg-emerald-500/20 selection:text-emerald-800">
       <Navbar />
       <HeroSection />
+      <HighSubmittedContainer />
       <AqiSimulator />
       <PollutantMatrix />
       <UrbanAnatomy />

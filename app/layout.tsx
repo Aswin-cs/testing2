@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Providers from "@/components/Providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="h-full antialiased scroll-smooth">
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 font-sans selection:bg-emerald-500/20 selection:text-emerald-800">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
