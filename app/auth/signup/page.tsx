@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
 import {
   WindIcon,
@@ -11,15 +11,25 @@ import {
   UserIcon,
   ArrowRightIcon,
   ShieldCheckIcon,
+  GoogleIcon,
+  GitHubIcon,
 } from "@/components/Icons";
 
-export default function SignUpPage() {
+function SignUpContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const oauthError = searchParams.get("error");
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(
+    oauthError === "OAuthSignin" || oauthError === "OAuthCallback"
+      ? "OAuth authentication failed. Verify OAuth credentials in .env.local."
+      : null
+  );
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,6 +73,18 @@ export default function SignUpPage() {
     }
   };
 
+  const handleOAuthSignIn = async (provider: "google" | "github") => {
+    setError(null);
+    setOauthLoading(provider);
+    try {
+      await signIn(provider, { callbackUrl: "/" });
+    } catch (err: unknown) {
+      const error = err as Error;
+      setError(error?.message || "OAuth provider connection failed");
+      setOauthLoading(null);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background ambient lighting */}
@@ -94,13 +116,47 @@ export default function SignUpPage() {
             </div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          {/* OAuth Fast Registration / Sign In */}
+          <div className="grid grid-cols-2 gap-3 mb-5">
+            <button
+              type="button"
+              onClick={() => handleOAuthSignIn("google")}
+              disabled={!!oauthLoading || loading}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-700 shadow-2xs transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+            >
+              <GoogleIcon className="w-4 h-4 shrink-0" />
+              <span>{oauthLoading === "google" ? "Connecting..." : "Google"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleOAuthSignIn("github")}
+              disabled={!!oauthLoading || loading}
+              className="flex items-center justify-center gap-2 py-2.5 px-3 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-mono font-semibold text-slate-700 shadow-2xs transition-all active:scale-95 disabled:opacity-60 cursor-pointer"
+            >
+              <GitHubIcon className="w-4 h-4 shrink-0 text-slate-900" />
+              <span>{oauthLoading === "github" ? "Connecting..." : "GitHub"}</span>
+            </button>
+          </div>
+
+          <div className="relative my-5">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase font-mono">
+              <span className="bg-white px-2.5 text-slate-400 font-semibold">
+                Or register with email
+              </span>
+            </div>
+          </div>
+
+          <form className="space-y-4" onSubmit={handleSubmit}>
             <div>
               <label
                 htmlFor="name"
                 className="block text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider mb-1.5"
               >
-                Observer Full Name
+                Observer Name / Station ID
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -113,7 +169,7 @@ export default function SignUpPage() {
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Dr. Elena Vance"
+                  placeholder="Dr. S. Thorne"
                   className="block w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-mono text-slate-900 placeholder-slate-400 focus:outline-none focus:border-emerald-500 focus:bg-white transition-all shadow-2xs"
                 />
               </div>
@@ -124,7 +180,7 @@ export default function SignUpPage() {
                 htmlFor="email"
                 className="block text-xs font-mono font-semibold text-slate-700 uppercase tracking-wider mb-1.5"
               >
-                Station Observer Email
+                Observer Email Address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -171,11 +227,11 @@ export default function SignUpPage() {
               </p>
             </div>
 
-            <div>
+            <div className="pt-2">
               <button
                 type="submit"
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-sm text-xs font-mono font-bold text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none transition-all disabled:opacity-60 active:scale-95"
+                disabled={loading || !!oauthLoading}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-sm text-xs font-mono font-bold text-white bg-emerald-600 hover:bg-emerald-500 focus:outline-none transition-all disabled:opacity-60 active:scale-95 cursor-pointer"
               >
                 <span>{loading ? "Registering & Authenticating..." : "Sign Up & Launch Terminal"}</span>
                 <ArrowRightIcon className="w-4 h-4" />
@@ -183,7 +239,7 @@ export default function SignUpPage() {
             </div>
           </form>
 
-          <div className="mt-6 pt-6 border-t border-slate-100 text-center">
+          <div className="mt-6 pt-5 border-t border-slate-100 text-center">
             <p className="text-xs text-slate-500 font-mono">
               Already have an atmospheric observer account?{" "}
               <Link
@@ -198,9 +254,17 @@ export default function SignUpPage() {
 
         <div className="mt-6 flex items-center justify-center gap-2 text-[11px] font-mono text-slate-400">
           <ShieldCheckIcon className="w-3.5 h-3.5 text-emerald-600" />
-          <span>NextAuth JWT • Mongoose Schema Integration</span>
+          <span>NextAuth OAuth &amp; JWT • Mongoose Schema Integration</span>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function SignUpPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50" />}>
+      <SignUpContent />
+    </Suspense>
   );
 }

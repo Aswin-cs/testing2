@@ -5,6 +5,8 @@ export interface IUser {
   name: string;
   email: string;
   password?: string;
+  image?: string;
+  provider?: string;
   role?: string;
   createdAt?: Date;
 }
@@ -24,8 +26,16 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: [true, "Password is required"],
+    required: false,
     select: true,
+  },
+  image: {
+    type: String,
+    required: false,
+  },
+  provider: {
+    type: String,
+    default: "credentials",
   },
   role: {
     type: String,
