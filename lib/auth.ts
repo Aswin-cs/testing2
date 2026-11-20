@@ -1,115 +1,15 @@
 import { AuthOptions } from "next-auth";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
-import bcrypt from "bcryptjs";
 import { connectToDatabase } from "./mongodb";
 import { User } from "../models/User";
-import { fallbackUsers } from "./fallbackStore";
 
 const providers: AuthOptions["providers"] = [
-  CredentialsProvider({
-    name: "Credentials",
-    credentials: {
-      email: { label: "Email", type: "email" },
-      password: { label: "Password", type: "password" },
-    },
-    async authorize(credentials) {
-      if (!credentials?.email || !credentials?.password) {
-        throw new Error("Please enter both email and password");
-      }
-
-      const normalizedEmail = credentials.email.toLowerCase().trim();
-
-      // 1. Attempt MongoDB connection via Mongoose
-      const conn = await connectToDatabase();
-      if (conn) {
-        try {
-          const user = await User.findOne({ email: normalizedEmail });
-          if (user && user.password) {
-            const isMatch = await bcrypt.compare(
-              credentials.password,
-              user.password
-            );
-            if (!isMatch) {
-              throw new Error("Invalid email or password");
-            }
-            return {
-              id: user._id.toString(),
-              name: user.name,
-              email: user.email,
-              role: user.role || "citizen_observer",
-            };
-          }
-        } catch (dbError) {
-          console.warn("MongoDB query error, falling back:", dbError);
-        }
-      }
-
-      // 2. Fallback memory store check
-      const fbUser = fallbackUsers.find(
-        (u) => u.email.toLowerCase() === normalizedEmail
-      );
-      if (fbUser) {
-        const isMatch = await bcrypt.compare(
-          credentials.password,
-          fbUser.passwordHash
-        );
-        if (!isMatch) {
-          throw new Error("Invalid email or password");
-        }
-        return {
-          id: fbUser.id,
-          name: fbUser.name,
-          email: fbUser.email,
-          role: fbUser.role,
-        };
-      }
-
-      throw new Error("No account found with this email");
-    },
+  GoogleProvider({
+    clientId: process.env.GOOGLE_CLIENT_ID || "not_configured_google_id",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "not_configured_google_secret",
+    allowDangerousEmailAccountLinking: true,
   }),
 ];
-
-// Add Google OAuth Provider if credentials are provided or configured
-if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  providers.push(
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    })
-  );
-} else {
-  // Graceful fallback dummy provider to allow NextAuth initialization without crashing
-  providers.push(
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || "not_configured_google_id",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "not_configured_google_secret",
-      allowDangerousEmailAccountLinking: true,
-    })
-  );
-}
-
-// Add GitHub OAuth Provider if credentials are provided or configured
-if (process.env.GITHUB_ID && process.env.GITHUB_SECRET) {
-  providers.push(
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-      allowDangerousEmailAccountLinking: true,
-    })
-  );
-} else {
-  // Graceful fallback dummy provider to allow NextAuth initialization without crashing
-  providers.push(
-    GitHubProvider({
-      clientId: process.env.GITHUB_ID || "not_configured_github_id",
-      clientSecret: process.env.GITHUB_SECRET || "not_configured_github_secret",
-      allowDangerousEmailAccountLinking: true,
-    })
-  );
-}
 
 export const authOptions: AuthOptions = {
   session: {
@@ -119,7 +19,7 @@ export const authOptions: AuthOptions = {
   providers,
   callbacks: {
     async signIn({ user, account }) {
-      if (account?.provider === "google" || account?.provider === "github") {
+      if (account?.provider === "google") {
         try {
           const conn = await connectToDatabase();
           if (conn && user.email) {
@@ -130,7 +30,7 @@ export const authOptions: AuthOptions = {
                 name: user.name || "Citizen Observer",
                 email: normalizedEmail,
                 image: user.image || undefined,
-                provider: account.provider,
+                provider: "google",
                 role: "citizen_observer",
               });
             } else if (!existingUser.image && user.image) {
@@ -139,7 +39,7 @@ export const authOptions: AuthOptions = {
             }
           }
         } catch (dbErr) {
-          console.warn("OAuth user auto-sync error:", dbErr);
+          console.warn("Google OAuth user auto-sync error:", dbErr);
         }
       }
       return true;

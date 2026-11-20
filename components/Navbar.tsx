@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { ActivityIcon, WindIcon, UserIcon, LogOutIcon } from "./Icons";
+import { ActivityIcon, WindIcon, UserIcon, LogOutIcon, GoogleIcon } from "./Icons";
 
 export default function Navbar() {
   const { data: session, status } = useSession();
@@ -120,20 +120,13 @@ export default function Navbar() {
                 </button>
               </div>
             ) : (
-              <>
-                <Link
-                  href="/auth/signin"
-                  className="text-xs font-mono font-semibold px-3.5 py-2 rounded-xl text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 transition-all shadow-2xs"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="text-xs font-mono font-semibold px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white transition-all shadow-sm active:scale-95"
-                >
-                  Sign Up
-                </Link>
-              </>
+              <Link
+                href="/auth/signin"
+                className="flex items-center gap-2 text-xs font-mono font-semibold px-3.5 py-2 rounded-xl text-slate-800 hover:text-slate-900 bg-white hover:bg-slate-50 border border-slate-200 hover:border-slate-300 transition-all shadow-2xs active:scale-95"
+              >
+                <GoogleIcon className="w-4 h-4 shrink-0" />
+                <span>Sign In</span>
+              </Link>
             )}
 
             <a
